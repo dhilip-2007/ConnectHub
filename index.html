@@ -1,0 +1,870 @@
+ 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="ConnectHub is a modern social media platform to share posts, connect with friends, discover communities, and express yourself.">
+    <meta name="theme-color" content="#6654e8">
+    <title>ConnectHub — Connect. Share. Belong.</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+</head>
+<body>
+
+    <!-- ==================== APP LOADER ==================== -->
+    <div class="app-loader" id="appLoader" aria-label="Loading ConnectHub">
+        <div class="loader-logo"><i class="fa-solid fa-link"></i></div>
+        <h2>ConnectHub</h2>
+        <div class="loader-spinner"></div>
+    </div>
+
+    <!-- ==================== TOAST CONTAINER ==================== -->
+    <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+    <!-- ==================== TOP NAVIGATION ==================== -->
+    <header class="topbar" id="topbar">
+        <div class="topbar-left">
+            <a href="#home" class="brand" aria-label="ConnectHub home">
+                <span class="brand-icon"><i class="fa-solid fa-link"></i></span>
+                <span class="brand-name">Connect<span>Hub</span></span>
+            </a>
+            <label class="global-search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="search" id="globalSearch" placeholder="Search people, posts, topics..." autocomplete="off" aria-label="Search ConnectHub">
+                <kbd>Ctrl K</kbd>
+            </label>
+        </div>
+
+        <nav class="topbar-center" aria-label="Main navigation">
+            <a href="#home" class="top-nav-link active" data-page="home" aria-label="Home">
+                <i class="fa-solid fa-house"></i><span>Home</span>
+            </a>
+            <a href="#explore" class="top-nav-link" data-page="explore" aria-label="Explore">
+                <i class="fa-solid fa-compass"></i><span>Explore</span>
+            </a>
+            <a href="#messages" class="top-nav-link" data-page="messages" aria-label="Messages">
+                <i class="fa-regular fa-message"></i><span>Messages</span>
+            </a>
+            <a href="#notifications" class="top-nav-link" data-page="notifications" aria-label="Notifications">
+                <i class="fa-regular fa-bell"></i><span>Notifications</span>
+                <span class="nav-badge" id="navNotificationBadge">3</span>
+            </a>
+        </nav>
+
+        <div class="topbar-right">
+            <button class="icon-button theme-toggle" id="themeToggle" aria-label="Toggle dark mode" title="Toggle theme">
+                <i class="fa-regular fa-moon"></i>
+            </button>
+            <button class="icon-button" id="createPostTopButton" aria-label="Create post" title="Create a post">
+                <i class="fa-solid fa-plus"></i>
+            </button>
+            <button class="icon-button" id="topNotificationButton" aria-label="Show notifications" title="Notifications">
+                <i class="fa-regular fa-bell"></i>
+                <span class="notification-dot"></span>
+            </button>
+            <button class="top-profile-button" id="topProfileButton" aria-label="Open your profile">
+                <img src="https://i.pravatar.cc/100?img=12" alt="Your profile">
+                <span>Alex Morgan</span>
+                <i class="fa-solid fa-chevron-down"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- ==================== MOBILE SEARCH ==================== -->
+    <div class="mobile-search-bar">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="search" id="mobileSearch" placeholder="Search ConnectHub..." aria-label="Search">
+        <button class="icon-button" id="mobileSearchButton" aria-label="Search"><i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+
+    <!-- ==================== MAIN APP LAYOUT ==================== -->
+    <div class="app-layout">
+
+        <!-- ==================== LEFT SIDEBAR ==================== -->
+        <aside class="left-sidebar" id="leftSidebar">
+            <div class="sidebar-section">
+                <p class="sidebar-heading">MENU</p>
+                <a href="#home" class="sidebar-link active" data-page="home">
+                    <span class="sidebar-icon purple"><i class="fa-solid fa-house"></i></span>
+                    <span>Home Feed</span>
+                </a>
+                <a href="#explore" class="sidebar-link" data-page="explore">
+                    <span class="sidebar-icon blue"><i class="fa-solid fa-compass"></i></span>
+                    <span>Explore</span>
+                </a>
+                <a href="#messages" class="sidebar-link" data-page="messages">
+                    <span class="sidebar-icon green"><i class="fa-regular fa-message"></i></span>
+                    <span>Messages</span>
+                    <span class="sidebar-count">4</span>
+                </a>
+                <a href="#notifications" class="sidebar-link" data-page="notifications">
+                    <span class="sidebar-icon orange"><i class="fa-regular fa-bell"></i></span>
+                    <span>Notifications</span>
+                    <span class="sidebar-count" id="sidebarNotificationCount">3</span>
+                </a>
+                <a href="#saved" class="sidebar-link" data-page="saved">
+                    <span class="sidebar-icon pink"><i class="fa-regular fa-bookmark"></i></span>
+                    <span>Saved Posts</span>
+                </a>
+                <a href="#profile" class="sidebar-link" data-page="profile">
+                    <span class="sidebar-icon violet"><i class="fa-regular fa-user"></i></span>
+                    <span>My Profile</span>
+                </a>
+            </div>
+
+            <div class="sidebar-divider"></div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-heading-row">
+                    <p class="sidebar-heading">YOUR COMMUNITIES</p>
+                    <button class="small-icon-button" id="addCommunityButton" aria-label="Add community" title="Add community">
+                        <i class="fa-solid fa-plus"></i>
+                    </button>
+                </div>
+                <a href="#community-design" class="community-link" data-community="Design Circle">
+                    <span class="community-emoji community-purple">🎨</span>
+                    <span>Design Circle</span>
+                    <span class="community-online"></span>
+                </a>
+                <a href="#community-tech" class="community-link" data-community="Tech Innovators">
+                    <span class="community-emoji community-blue">💻</span>
+                    <span>Tech Innovators</span>
+                </a>
+                <a href="#community-travel" class="community-link" data-community="Travel Stories">
+                    <span class="community-emoji community-orange">🌍</span>
+                    <span>Travel Stories</span>
+                </a>
+                <a href="#community-photography" class="community-link" data-community="Photography Club">
+                    <span class="community-emoji community-pink">📸</span>
+                    <span>Photography Club</span>
+                </a>
+                <a href="#communities" class="sidebar-more-link" id="viewAllCommunities">
+                    <i class="fa-solid fa-ellipsis"></i> View all communities
+                </a>
+            </div>
+
+            <div class="sidebar-divider"></div>
+
+            <div class="sidebar-section">
+                <p class="sidebar-heading">YOUR SHORTCUTS</p>
+                <a href="#events" class="sidebar-link" data-page="events">
+                    <span class="sidebar-icon red"><i class="fa-regular fa-calendar"></i></span>
+                    <span>Events</span>
+                </a>
+                <a href="#memories" class="sidebar-link" data-page="memories">
+                    <span class="sidebar-icon yellow"><i class="fa-regular fa-images"></i></span>
+                    <span>Memories</span>
+                </a>
+                <a href="#settings" class="sidebar-link" data-page="settings">
+                    <span class="sidebar-icon gray"><i class="fa-solid fa-gear"></i></span>
+                    <span>Settings</span>
+                </a>
+            </div>
+
+            <div class="sidebar-promo">
+                <div class="promo-decoration"><i class="fa-solid fa-sparkles"></i></div>
+                <h3>Make meaningful connections.</h3>
+                <p>Discover new people and communities that inspire you.</p>
+                <button class="primary-button promo-button" id="explorePromoButton">Explore now <i class="fa-solid fa-arrow-right"></i></button>
+            </div>
+
+            <div class="sidebar-footer">
+                <a href="#about" id="aboutLink">About</a>
+                <a href="#privacy" id="privacyLink">Privacy</a>
+                <a href="#terms" id="termsLink">Terms</a>
+                <span>© 2026 ConnectHub</span>
+            </div>
+        </aside>
+
+        <!-- ==================== MAIN CONTENT ==================== -->
+        <main class="main-content" id="mainContent">
+
+            <!-- PAGE TITLE -->
+            <section class="welcome-section" id="welcomeSection">
+                <div class="welcome-copy">
+                    <p class="eyebrow"><span class="eyebrow-dot"></span> YOUR COMMUNITY, YOUR SPACE</p>
+                    <h1>Good to see you, <span>Alex!</span> 👋</h1>
+                    <p>Catch up with your community and discover something new today.</p>
+                </div>
+                <button class="primary-button welcome-create-button" id="welcomeCreateButton">
+                    <i class="fa-solid fa-plus"></i> Create post
+                </button>
+            </section>
+
+            <!-- ==================== QUICK STATS ==================== -->
+            <section class="quick-stats" aria-label="Your activity">
+                <article class="stat-card">
+                    <div class="stat-icon stat-icon-purple"><i class="fa-solid fa-users"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-label">Friends</span>
+                        <strong id="friendStat">248</strong>
+                    </div>
+                    <span class="stat-trend"><i class="fa-solid fa-arrow-trend-up"></i> 12%</span>
+                </article>
+                <article class="stat-card">
+                    <div class="stat-icon stat-icon-pink"><i class="fa-solid fa-heart"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-label">Total likes</span>
+                        <strong id="likeStat">1,284</strong>
+                    </div>
+                    <span class="stat-trend"><i class="fa-solid fa-arrow-trend-up"></i> 8%</span>
+                </article>
+                <article class="stat-card">
+                    <div class="stat-icon stat-icon-blue"><i class="fa-solid fa-pen-to-square"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-label">Your posts</span>
+                        <strong id="postStat">36</strong>
+                    </div>
+                    <span class="stat-trend">This month</span>
+                </article>
+            </section>
+
+            <!-- ==================== STORIES ==================== -->
+            <section class="stories-section content-card" id="storiesSection">
+                <div class="section-header">
+                    <div>
+                        <h2>Stories <span class="live-indicator"></span></h2>
+                        <p>Little moments from your people</p>
+                    </div>
+                    <button class="text-button" id="viewAllStoriesButton">View all <i class="fa-solid fa-arrow-right"></i></button>
+                </div>
+
+                <div class="stories-container" id="storiesContainer">
+                    <button class="story-card add-story-card" id="addStoryButton" aria-label="Add your story">
+                        <div class="add-story-image">
+                            <img src="https://i.pravatar.cc/120?img=12" alt="Your avatar">
+                            <span class="add-story-plus"><i class="fa-solid fa-plus"></i></span>
+                        </div>
+                        <span class="story-name">Your story</span>
+                        <span class="story-subtitle">Share a moment</span>
+                    </button>
+
+                    <button class="story-card" data-story-user="Sophia Chen" data-story-image="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800" aria-label="View Sophia's story">
+                        <div class="story-image story-ring">
+                            <img src="https://i.pravatar.cc/120?img=47" alt="Sophia Chen">
+                            <span class="story-status"></span>
+                        </div>
+                        <span class="story-name">Sophia</span>
+                        <span class="story-subtitle">12 min ago</span>
+                    </button>
+
+                    <button class="story-card" data-story-user="Noah Williams" data-story-image="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=800" aria-label="View Noah's story">
+                        <div class="story-image story-ring">
+                            <img src="https://i.pravatar.cc/120?img=13" alt="Noah Williams">
+                        </div>
+                        <span class="story-name">Noah</span>
+                        <span class="story-subtitle">28 min ago</span>
+                    </button>
+
+                    <button class="story-card" data-story-user="Emma Wilson" data-story-image="https://images.unsplash.com/photo-1470770841072-f978cf4d019e?w=800" aria-label="View Emma's story">
+                        <div class="story-image story-ring">
+                            <img src="https://i.pravatar.cc/120?img=44" alt="Emma Wilson">
+                        </div>
+                        <span class="story-name">Emma</span>
+                        <span class="story-subtitle">1 hour ago</span>
+                    </button>
+
+                    <button class="story-card" data-story-user="Liam Anderson" data-story-image="https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=800" aria-label="View Liam's story">
+                        <div class="story-image story-ring">
+                            <img src="https://i.pravatar.cc/120?img=14" alt="Liam Anderson">
+                        </div>
+                        <span class="story-name">Liam</span>
+                        <span class="story-subtitle">2 hours ago</span>
+                    </button>
+
+                    <button class="story-card" data-story-user="Olivia Brown" data-story-image="https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?w=800" aria-label="View Olivia's story">
+                        <div class="story-image story-ring">
+                            <img src="https://i.pravatar.cc/120?img=49" alt="Olivia Brown">
+                        </div>
+                        <span class="story-name">Olivia</span>
+                        <span class="story-subtitle">3 hours ago</span>
+                    </button>
+
+                    <button class="story-card" data-story-user="Ethan Taylor" data-story-image="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800" aria-label="View Ethan's story">
+                        <div class="story-image story-ring">
+                            <img src="https://i.pravatar.cc/120?img=15" alt="Ethan Taylor">
+                        </div>
+                        <span class="story-name">Ethan</span>
+                        <span class="story-subtitle">4 hours ago</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- ==================== CREATE POST ==================== -->
+            <section class="create-post-card content-card" id="createPostCard">
+                <div class="create-post-header">
+                    <img src="https://i.pravatar.cc/100?img=12" alt="Alex Morgan" class="avatar avatar-medium">
+                    <button class="post-prompt" id="postPromptButton">What's on your mind, Alex?</button>
+                </div>
+                <div class="create-post-divider"></div>
+                <div class="create-post-actions">
+                    <button class="create-action" id="addPhotoButton"><span class="action-icon photo-action"><i class="fa-regular fa-image"></i></span> Photo</button>
+                    <button class="create-action" id="addFeelingButton"><span class="action-icon feeling-action"><i class="fa-regular fa-face-smile"></i></span> Feeling</button>
+                    <button class="create-action" id="addLocationButton"><span class="action-icon location-action"><i class="fa-solid fa-location-dot"></i></span> Check in</button>
+                    <button class="primary-button create-submit-button" id="openCreateModalButton">Create <i class="fa-solid fa-arrow-right"></i></button>
+                </div>
+            </section>
+
+            <!-- ==================== FEED CONTROLS ==================== -->
+            <section class="feed-toolbar">
+                <div class="feed-heading">
+                    <h2 id="feedTitle">Your Feed</h2>
+                    <span class="feed-count" id="feedCount">12 posts</span>
+                </div>
+                <div class="feed-filters">
+                    <button class="filter-button active" data-filter="all"><i class="fa-solid fa-earth-americas"></i> All posts</button>
+                    <button class="filter-button" data-filter="following"><i class="fa-solid fa-user-group"></i> Following</button>
+                    <button class="filter-button" data-filter="popular"><i class="fa-solid fa-fire"></i> Popular</button>
+                </div>
+            </section>
+
+            <!-- ==================== POST FEED ==================== -->
+            <section class="post-feed" id="postFeed" aria-label="Community posts">
+
+                <!-- POST 1 -->
+                <article class="post-card content-card" data-post-id="post-1" data-author="Sophia Chen" data-category="design">
+                    <div class="post-header">
+                        <img src="https://i.pravatar.cc/100?img=47" alt="Sophia Chen" class="avatar avatar-large">
+                        <div class="post-author-info">
+                            <div class="post-author-name">
+                                <strong>Sophia Chen</strong>
+                                <span class="verified-badge" title="Verified"><i class="fa-solid fa-circle-check"></i></span>
+                                <span class="post-action-text">shared a photo</span>
+                            </div>
+                            <div class="post-meta">
+                                <span>Product Designer</span><span>·</span>
+                                <time datetime="2026-10-23T16:30:00">25 min ago</time>
+                                <span>·</span><i class="fa-solid fa-earth-americas" title="Public"></i>
+                            </div>
+                        </div>
+                        <button class="post-menu-button" data-menu-post="post-1" aria-label="Post options"><i class="fa-solid fa-ellipsis"></i></button>
+                    </div>
+                    <div class="post-content">
+                        <p>Sometimes all you need is a little change of scenery to find a whole new perspective. 🌿 Taking a moment to slow down, breathe, and appreciate the little things today.</p>
+                        <p class="post-hashtags"><a href="#nature">#MindfulMoments</a> <a href="#weekend">#WeekendVibes</a> <a href="#life">#LifeInColor</a></p>
+                        <div class="post-image-container">
+                            <img class="post-image" src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1000&q=85" alt="Sunlight streaming through a peaceful green forest" loading="lazy">
+                            <span class="image-overlay-label"><i class="fa-solid fa-camera"></i> Nature moments</span>
+                        </div>
+                    </div>
+                    <div class="post-engagement-summary">
+                        <div class="reaction-summary"><span class="reaction-icons"><span>❤️</span><span>👍</span><span>😍</span></span><span class="like-count">248 reactions</span></div>
+                        <div class="engagement-details"><button class="comment-count-button" data-open-comments="post-1">32 comments</button><span>·</span><span>12 shares</span></div>
+                    </div>
+                    <div class="post-action-bar">
+                        <button class="post-action-button like-button" data-like-post="post-1"><i class="fa-regular fa-heart"></i><span>Like</span></button>
+                        <button class="post-action-button" data-open-comments="post-1"><i class="fa-regular fa-comment"></i><span>Comment</span></button>
+                        <button class="post-action-button share-button" data-share-post="post-1"><i class="fa-solid fa-share-nodes"></i><span>Share</span></button>
+                        <button class="post-action-button bookmark-button" data-save-post="post-1" aria-label="Save post"><i class="fa-regular fa-bookmark"></i></button>
+                    </div>
+                    <div class="comments-preview" id="comments-post-1">
+                        <div class="comment-item">
+                            <img src="https://i.pravatar.cc/60?img=11" alt="Mia's avatar" class="avatar avatar-small">
+                            <div class="comment-bubble"><strong>Mia Thompson</strong><p>This is exactly the peaceful vibe I needed today! 💚</p></div>
+                            <button class="comment-like-button" aria-label="Like comment"><i class="fa-regular fa-heart"></i></button>
+                        </div>
+                        <button class="view-comments-button" data-open-comments="post-1">View all 32 comments</button>
+                        <form class="comment-form" data-comment-form="post-1">
+                            <img src="https://i.pravatar.cc/60?img=12" alt="Your avatar" class="avatar avatar-small">
+                            <label class="comment-input-wrapper">
+                                <input type="text" name="comment" placeholder="Write a comment..." aria-label="Write a comment" required>
+                                <button type="submit" aria-label="Send comment"><i class="fa-solid fa-paper-plane"></i></button>
+                            </label>
+                        </form>
+                    </div>
+                </article>
+
+                <!-- POST 2 -->
+                <article class="post-card content-card" data-post-id="post-2" data-author="Noah Williams" data-category="technology">
+                    <div class="post-header">
+                        <img src="https://i.pravatar.cc/100?img=13" alt="Noah Williams" class="avatar avatar-large">
+                        <div class="post-author-info">
+                            <div class="post-author-name"><strong>Noah Williams</strong><span class="post-action-text">shared an update</span></div>
+                            <div class="post-meta"><span>Software Developer</span><span>·</span><time datetime="2026-10-23T15:00:00">1 hour ago</time><span>·</span><i class="fa-solid fa-earth-americas"></i></div>
+                        </div>
+                        <button class="post-menu-button" data-menu-post="post-2" aria-label="Post options"><i class="fa-solid fa-ellipsis"></i></button>
+                    </div>
+                    <div class="post-content">
+                        <p>After weeks of learning, experimenting, and debugging, I finally launched my first open-source project! 🚀</p>
+                        <p>The best part of coding isn't writing perfect code on the first try. It's learning something new every time things don't work. Keep building, keep learning!</p>
+                        <p class="post-hashtags"><a href="#coding">#100DaysOfCode</a> <a href="#opensource">#OpenSource</a> <a href="#developer">#DeveloperLife</a></p>
+                        <div class="project-preview-card">
+                            <div class="project-preview-icon"><i class="fa-solid fa-code"></i></div>
+                            <div class="project-preview-info"><span class="project-preview-label">FEATURED PROJECT</span><h3>DevBoard — Developer Dashboard</h3><p>A simple workspace for developers to organize tasks and track progress.</p><span class="project-tags"><span>HTML</span><span>CSS</span><span>JavaScript</span></span></div>
+                            <i class="fa-solid fa-arrow-up-right-from-square project-external-icon"></i>
+                        </div>
+                    </div>
+                    <div class="post-engagement-summary">
+                        <div class="reaction-summary"><span class="reaction-icons"><span>👍</span><span>❤️</span></span><span class="like-count">156 reactions</span></div>
+                        <div class="engagement-details"><button class="comment-count-button" data-open-comments="post-2">24 comments</button><span>·</span><span>8 shares</span></div>
+                    </div>
+                    <div class="post-action-bar">
+                        <button class="post-action-button like-button" data-like-post="post-2"><i class="fa-regular fa-heart"></i><span>Like</span></button>
+                        <button class="post-action-button" data-open-comments="post-2"><i class="fa-regular fa-comment"></i><span>Comment</span></button>
+                        <button class="post-action-button share-button" data-share-post="post-2"><i class="fa-solid fa-share-nodes"></i><span>Share</span></button>
+                        <button class="post-action-button bookmark-button" data-save-post="post-2" aria-label="Save post"><i class="fa-regular fa-bookmark"></i></button>
+                    </div>
+                    <div class="comments-preview" id="comments-post-2">
+                        <div class="comment-item"><img src="https://i.pravatar.cc/60?img=32" alt="Daniel's avatar" class="avatar avatar-small"><div class="comment-bubble"><strong>Daniel Lee</strong><p>Congratulations! Shipping a project is a huge milestone. 🚀</p></div></div>
+                        <button class="view-comments-button" data-open-comments="post-2">View all 24 comments</button>
+                        <form class="comment-form" data-comment-form="post-2"><img src="https://i.pravatar.cc/60?img=12" alt="Your avatar" class="avatar avatar-small"><label class="comment-input-wrapper"><input type="text" name="comment" placeholder="Write a comment..." aria-label="Write a comment" required><button type="submit" aria-label="Send comment"><i class="fa-solid fa-paper-plane"></i></button></label></form>
+                    </div>
+                </article>
+
+                <!-- POST 3 -->
+                <article class="post-card content-card" data-post-id="post-3" data-author="Emma Wilson" data-category="travel">
+                    <div class="post-header">
+                        <img src="https://i.pravatar.cc/100?img=44" alt="Emma Wilson" class="avatar avatar-large">
+                        <div class="post-author-info">
+                            <div class="post-author-name"><strong>Emma Wilson</strong><span class="verified-badge"><i class="fa-solid fa-circle-check"></i></span><span class="post-action-text">shared a memory</span></div>
+                            <div class="post-meta"><span>Travel Enthusiast</span><span>·</span><time datetime="2026-10-23T13:00:00">3 hours ago</time><span>·</span><i class="fa-solid fa-earth-americas"></i></div>
+                        </div>
+                        <button class="post-menu-button" data-menu-post="post-3" aria-label="Post options"><i class="fa-solid fa-ellipsis"></i></button>
+                    </div>
+                    <div class="post-content">
+                        <p>Postcard from paradise! 🌊 Some places make you forget to check your phone, and this is definitely one of them. Adding this beautiful morning to my favorite memories.</p>
+                        <p class="post-hashtags"><a href="#travel">#TravelDiaries</a> <a href="#ocean">#OceanViews</a> <a href="#adventure">#FindYourAdventure</a></p>
+                        <div class="post-image-container">
+                            <img class="post-image" src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1000&q=85" alt="Beautiful tropical beach with turquoise water and white sand" loading="lazy">
+                            <span class="image-overlay-label"><i class="fa-solid fa-location-dot"></i> Somewhere beautiful</span>
+                        </div>
+                    </div>
+                    <div class="post-engagement-summary">
+                        <div class="reaction-summary"><span class="reaction-icons"><span>❤️</span><span>😍</span><span>🔥</span></span><span class="like-count">392 reactions</span></div>
+                        <div class="engagement-details"><button class="comment-count-button" data-open-comments="post-3">48 comments</button><span>·</span><span>21 shares</span></div>
+                    </div>
+                    <div class="post-action-bar">
+                        <button class="post-action-button like-button" data-like-post="post-3"><i class="fa-regular fa-heart"></i><span>Like</span></button>
+                        <button class="post-action-button" data-open-comments="post-3"><i class="fa-regular fa-comment"></i><span>Comment</span></button>
+                        <button class="post-action-button share-button" data-share-post="post-3"><i class="fa-solid fa-share-nodes"></i><span>Share</span></button>
+                        <button class="post-action-button bookmark-button" data-save-post="post-3" aria-label="Save post"><i class="fa-regular fa-bookmark"></i></button>
+                    </div>
+                    <div class="comments-preview" id="comments-post-3">
+                        <div class="comment-item"><img src="https://i.pravatar.cc/60?img=16" alt="Ryan's avatar" class="avatar avatar-small"><div class="comment-bubble"><strong>Ryan Cooper</strong><p>Adding this place to my bucket list immediately! 🌴</p></div></div>
+                        <button class="view-comments-button" data-open-comments="post-3">View all 48 comments</button>
+                        <form class="comment-form" data-comment-form="post-3"><img src="https://i.pravatar.cc/60?img=12" alt="Your avatar" class="avatar avatar-small"><label class="comment-input-wrapper"><input type="text" name="comment" placeholder="Write a comment..." aria-label="Write a comment" required><button type="submit" aria-label="Send comment"><i class="fa-solid fa-paper-plane"></i></button></label></form>
+                    </div>
+                </article>
+
+                <!-- POST 4 -->
+                <article class="post-card content-card" data-post-id="post-4" data-author="Liam Anderson" data-category="fitness">
+                    <div class="post-header">
+                        <img src="https://i.pravatar.cc/100?img=14" alt="Liam Anderson" class="avatar avatar-large">
+                        <div class="post-author-info">
+                            <div class="post-author-name"><strong>Liam Anderson</strong><span class="post-action-text">shared a milestone</span></div>
+                            <div class="post-meta"><span>Fitness Coach</span><span>·</span><time datetime="2026-10-23T11:30:00">4 hours ago</time><span>·</span><i class="fa-solid fa-earth-americas"></i></div>
+                        </div>
+                        <button class="post-menu-button" data-menu-post="post-4" aria-label="Post options"><i class="fa-solid fa-ellipsis"></i></button>
+                    </div>
+                    <div class="post-content">
+                        <p>30 days of showing up for myself. 💪 Not every day was easy, but consistency always beats perfection. Whatever your goal is, take that first step today. Your future self will thank you!</p>
+                        <p class="post-hashtags"><a href="#fitness">#FitnessJourney</a> <a href="#motivation">#KeepGoing</a> <a href="#wellness">#HealthyHabits</a></p>
+                        <div class="motivation-card">
+                            <div class="motivation-decoration"><i class="fa-solid fa-bolt"></i></div>
+                            <p class="motivation-small">A REMINDER FOR TODAY</p>
+                            <h3>Progress, not perfection.</h3>
+                            <p>Small steps every day add up to remarkable results.</p>
+                        </div>
+                    </div>
+                    <div class="post-engagement-summary">
+                        <div class="reaction-summary"><span class="reaction-icons"><span>💪</span><span>❤️</span><span>👍</span></span><span class="like-count">184 reactions</span></div>
+                        <div class="engagement-details"><button class="comment-count-button" data-open-comments="post-4">19 comments</button><span>·</span><span>5 shares</span></div>
+                    </div>
+                    <div class="post-action-bar">
+                        <button class="post-action-button like-button" data-like-post="post-4"><i class="fa-regular fa-heart"></i><span>Like</span></button>
+                        <button class="post-action-button" data-open-comments="post-4"><i class="fa-regular fa-comment"></i><span>Comment</span></button>
+                        <button class="post-action-button share-button" data-share-post="post-4"><i class="fa-solid fa-share-nodes"></i><span>Share</span></button>
+                        <button class="post-action-button bookmark-button" data-save-post="post-4" aria-label="Save post"><i class="fa-regular fa-bookmark"></i></button>
+                    </div>
+                    <div class="comments-preview" id="comments-post-4">
+                        <div class="comment-item"><img src="https://i.pravatar.cc/60?img=25" alt="Ava's avatar" class="avatar avatar-small"><div class="comment-bubble"><strong>Ava Martinez</strong><p>Needed this reminder today. Consistency is everything! 🔥</p></div></div>
+                        <button class="view-comments-button" data-open-comments="post-4">View all 19 comments</button>
+                        <form class="comment-form" data-comment-form="post-4"><img src="https://i.pravatar.cc/60?img=12" alt="Your avatar" class="avatar avatar-small"><label class="comment-input-wrapper"><input type="text" name="comment" placeholder="Write a comment..." aria-label="Write a comment" required><button type="submit" aria-label="Send comment"><i class="fa-solid fa-paper-plane"></i></button></label></form>
+                    </div>
+                </article>
+
+                <!-- POST 5 -->
+                <article class="post-card content-card" data-post-id="post-5" data-author="Olivia Brown" data-category="art">
+                    <div class="post-header">
+                        <img src="https://i.pravatar.cc/100?img=49" alt="Olivia Brown" class="avatar avatar-large">
+                        <div class="post-author-info">
+                            <div class="post-author-name"><strong>Olivia Brown</strong><span class="post-action-text">shared a creation</span></div>
+                            <div class="post-meta"><span>Digital Artist</span><span>·</span><time datetime="2026-10-23T10:00:00">5 hours ago</time><span>·</span><i class="fa-solid fa-earth-americas"></i></div>
+                        </div>
+                        <button class="post-menu-button" data-menu-post="post-5" aria-label="Post options"><i class="fa-solid fa-ellipsis"></i></button>
+                    </div>
+                    <div class="post-content">
+                        <p>Playing with colors, shapes, and a little bit of imagination. 🎨 Here's a sneak peek at something I've been creating this week. Art reminds me that there is always more than one way to see the world.</p>
+                        <p class="post-hashtags"><a href="#digitalart">#DigitalArt</a> <a href="#creative">#CreativeProcess</a> <a href="#artist">#ArtistsOfConnectHub</a></p>
+                        <div class="post-image-container">
+                            <img class="post-image" src="https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=1000&q=85" alt="Colorful abstract artwork on canvas" loading="lazy">
+                        </div>
+                    </div>
+                    <div class="post-engagement-summary">
+                        <div class="reaction-summary"><span class="reaction-icons"><span>😍</span><span>❤️</span><span>👏</span></span><span class="like-count">217 reactions</span></div>
+                        <div class="engagement-details"><button class="comment-count-button" data-open-comments="post-5">27 comments</button><span>·</span><span>9 shares</span></div>
+                    </div>
+                    <div class="post-action-bar">
+                        <button class="post-action-button like-button" data-like-post="post-5"><i class="fa-regular fa-heart"></i><span>Like</span></button>
+                        <button class="post-action-button" data-open-comments="post-5"><i class="fa-regular fa-comment"></i><span>Comment</span></button>
+                        <button class="post-action-button share-button" data-share-post="post-5"><i class="fa-solid fa-share-nodes"></i><span>Share</span></button>
+                        <button class="post-action-button bookmark-button" data-save-post="post-5" aria-label="Save post"><i class="fa-regular fa-bookmark"></i></button>
+                    </div>
+                    <div class="comments-preview" id="comments-post-5">
+                        <div class="comment-item"><img src="https://i.pravatar.cc/60?img=36" alt="Zoe's avatar" class="avatar avatar-small"><div class="comment-bubble"><strong>Zoe Parker</strong><p>The colors are incredible! I'd hang this on my wall. 🎨</p></div></div>
+                        <button class="view-comments-button" data-open-comments="post-5">View all 27 comments</button>
+                        <form class="comment-form" data-comment-form="post-5"><img src="https://i.pravatar.cc/60?img=12" alt="Your avatar" class="avatar avatar-small"><label class="comment-input-wrapper"><input type="text" name="comment" placeholder="Write a comment..." aria-label="Write a comment" required><button type="submit" aria-label="Send comment"><i class="fa-solid fa-paper-plane"></i></button></label></form>
+                    </div>
+                </article>
+
+                <!-- POST 6 -->
+                <article class="post-card content-card" data-post-id="post-6" data-author="Ethan Taylor" data-category="food">
+                    <div class="post-header">
+                        <img src="https://i.pravatar.cc/100?img=15" alt="Ethan Taylor" class="avatar avatar-large">
+                        <div class="post-author-info">
+                            <div class="post-author-name"><strong>Ethan Taylor</strong><span class="post-action-text">shared a recommendation</span></div>
+                            <div class="post-meta"><span>Food Explorer</span><span>·</span><time datetime="2026-10-23T08:30:00">7 hours ago</time><span>·</span><i class="fa-solid fa-earth-americas"></i></div>
+                        </div>
+                        <button class="post-menu-button" data-menu-post="post-6" aria-label="Post options"><i class="fa-solid fa-ellipsis"></i></button>
+                    </div>
+                    <div class="post-content">
+                        <p>Weekend mission: find the best coffee in town. ☕ Found this little corner cafe with the coziest atmosphere and a seriously good cappuccino. What's your go-to coffee order?</p>
+                        <p class="post-hashtags"><a href="#coffee">#CoffeeCulture</a> <a href="#food">#FoodieFinds</a> <a href="#weekend">#LocalSpots</a></p>
+                        <div class="post-image-container">
+                            <img class="post-image" src="https://images.unsplash.com/photo-1445116572660-236099ec97a0?w=1000&q=85" alt="Cozy cafe with coffee and warm interior lighting" loading="lazy">
+                        </div>
+                    </div>
+                    <div class="post-engagement-summary">
+                        <div class="reaction-summary"><span class="reaction-icons"><span>☕</span><span>❤️</span><span>👍</span></span><span class="like-count">98 reactions</span></div>
+                        <div class="engagement-details"><button class="comment-count-button" data-open-comments="post-6">41 comments</button><span>·</span><span>4 shares</span></div>
+                    </div>
+                    <div class="post-action-bar">
+                        <button class="post-action-button like-button" data-like-post="post-6"><i class="fa-regular fa-heart"></i><span>Like</span></button>
+                        <button class="post-action-button" data-open-comments="post-6"><i class="fa-regular fa-comment"></i><span>Comment</span></button>
+                        <button class="post-action-button share-button" data-share-post="post-6"><i class="fa-solid fa-share-nodes"></i><span>Share</span></button>
+                        <button class="post-action-button bookmark-button" data-save-post="post-6" aria-label="Save post"><i class="fa-regular fa-bookmark"></i></button>
+                    </div>
+                    <div class="comments-preview" id="comments-post-6">
+                        <div class="comment-item"><img src="https://i.pravatar.cc/60?img=30" alt="James's avatar" class="avatar avatar-small"><div class="comment-bubble"><strong>James Miller</strong><p>Flat white, every single time! ☕</p></div></div>
+                        <button class="view-comments-button" data-open-comments="post-6">View all 41 comments</button>
+                        <form class="comment-form" data-comment-form="post-6"><img src="https://i.pravatar.cc/60?img=12" alt="Your avatar" class="avatar avatar-small"><label class="comment-input-wrapper"><input type="text" name="comment" placeholder="Write a comment..." aria-label="Write a comment" required><button type="submit" aria-label="Send comment"><i class="fa-solid fa-paper-plane"></i></button></label></form>
+                    </div>
+                </article>
+
+            </section>
+
+            <!-- ==================== LOAD MORE ==================== -->
+            <div class="load-more-section" id="loadMoreSection">
+                <div class="load-more-spinner" id="loadMoreSpinner"></div>
+                <button class="secondary-button" id="loadMoreButton">Load more posts <i class="fa-solid fa-arrow-down"></i></button>
+                <p>You're all caught up with your community.</p>
+            </div>
+
+            <!-- ==================== EMPTY SEARCH RESULTS ==================== -->
+            <section class="empty-state hidden" id="emptySearchState">
+                <div class="empty-state-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
+                <h2>No posts found</h2>
+                <p>Try searching for a different name, topic, or keyword.</p>
+                <button class="primary-button" id="clearSearchButton">Clear search</button>
+            </section>
+
+        </main>
+
+        <!-- ==================== RIGHT SIDEBAR ==================== -->
+        <aside class="right-sidebar" id="rightSidebar">
+
+            <!-- PROFILE MINI CARD -->
+            <section class="profile-mini-card content-card">
+                <div class="profile-cover">
+                    <div class="cover-decoration cover-circle-one"></div>
+                    <div class="cover-decoration cover-circle-two"></div>
+                    <span class="cover-label">YOUR SPACE</span>
+                </div>
+                <div class="profile-mini-content">
+                    <img src="https://i.pravatar.cc/120?img=12" alt="Alex Morgan" class="profile-mini-avatar">
+                    <h3>Alex Morgan <span class="verified-badge"><i class="fa-solid fa-circle-check"></i></span></h3>
+                    <p class="profile-mini-handle">@alexmorgan</p>
+                    <p class="profile-mini-bio">Designer, creator, and curious mind. Making things that matter. ✨</p>
+                    <div class="profile-mini-stats">
+                        <div><strong id="profilePostsCount">36</strong><span>Posts</span></div>
+                        <div><strong>248</strong><span>Friends</span></div>
+                        <div><strong>1.2k</strong><span>Followers</span></div>
+                    </div>
+                    <button class="secondary-button profile-view-button" id="viewMyProfileButton">View my profile <i class="fa-solid fa-arrow-right"></i></button>
+                </div>
+            </section>
+
+            <!-- PEOPLE YOU MAY KNOW -->
+            <section class="suggestions-section content-card">
+                <div class="section-header">
+                    <div><h2>People you may know</h2><p>Grow your circle</p></div>
+                    <button class="small-icon-button" id="refreshSuggestionsButton" aria-label="Refresh suggestions"><i class="fa-solid fa-rotate"></i></button>
+                </div>
+                <div class="suggestion-list" id="suggestionList">
+                    <div class="suggestion-item" data-suggestion-id="sarah">
+                        <img src="https://i.pravatar.cc/100?img=25" alt="Sarah Parker" class="avatar avatar-medium">
+                        <div class="suggestion-info"><strong>Sarah Parker</strong><span>12 mutual friends</span><div class="mutual-friends"><img src="https://i.pravatar.cc/30?img=11" alt=""><img src="https://i.pravatar.cc/30?img=16" alt=""><img src="https://i.pravatar.cc/30?img=32" alt=""></div></div>
+                        <button class="add-friend-button" data-add-friend="sarah" aria-label="Add Sarah Parker"><i class="fa-solid fa-user-plus"></i></button>
+                    </div>
+                    <div class="suggestion-item" data-suggestion-id="daniel">
+                        <img src="https://i.pravatar.cc/100?img=32" alt="Daniel Lee" class="avatar avatar-medium">
+                        <div class="suggestion-info"><strong>Daniel Lee</strong><span>8 mutual friends</span><div class="mutual-friends"><img src="https://i.pravatar.cc/30?img=13" alt=""><img src="https://i.pravatar.cc/30?img=20" alt=""></div></div>
+                        <button class="add-friend-button" data-add-friend="daniel" aria-label="Add Daniel Lee"><i class="fa-solid fa-user-plus"></i></button>
+                    </div>
+                    <div class="suggestion-item" data-suggestion-id="mia">
+                        <img src="https://i.pravatar.cc/100?img=11" alt="Mia Thompson" class="avatar avatar-medium">
+                        <div class="suggestion-info"><strong>Mia Thompson</strong><span>6 mutual friends</span><div class="mutual-friends"><img src="https://i.pravatar.cc/30?img=25" alt=""><img src="https://i.pravatar.cc/30?img=47" alt=""></div></div>
+                        <button class="add-friend-button" data-add-friend="mia" aria-label="Add Mia Thompson"><i class="fa-solid fa-user-plus"></i></button>
+                    </div>
+                    <div class="suggestion-item" data-suggestion-id="ryan">
+                        <img src="https://i.pravatar.cc/100?img=16" alt="Ryan Cooper" class="avatar avatar-medium">
+                        <div class="suggestion-info"><strong>Ryan Cooper</strong><span>4 mutual friends</span><div class="mutual-friends"><img src="https://i.pravatar.cc/30?img=14" alt=""><img src="https://i.pravatar.cc/30?img=49" alt=""></div></div>
+                        <button class="add-friend-button" data-add-friend="ryan" aria-label="Add Ryan Cooper"><i class="fa-solid fa-user-plus"></i></button>
+                    </div>
+                </div>
+                <button class="text-button full-width-button" id="seeAllPeopleButton">See all suggestions <i class="fa-solid fa-arrow-right"></i></button>
+            </section>
+
+            <!-- TRENDING TOPICS -->
+            <section class="trending-section content-card">
+                <div class="section-header"><div><h2>Trending topics</h2><p>What's happening today</p></div><i class="fa-solid fa-arrow-trend-up trending-heading-icon"></i></div>
+                <button class="trending-topic" data-trend="#WebDevelopment">
+                    <span class="trending-number">01</span>
+                    <span class="trending-info"><strong>#WebDevelopment</strong><span>2.4k posts</span></span>
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                </button>
+                <button class="trending-topic" data-trend="#CreativeMinds">
+                    <span class="trending-number">02</span>
+                    <span class="trending-info"><strong>#CreativeMinds</strong><span>1.8k posts</span></span>
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                </button>
+                <button class="trending-topic" data-trend="#TravelDiaries">
+                    <span class="trending-number">03</span>
+                    <span class="trending-info"><strong>#TravelDiaries</strong><span>1.2k posts</span></span>
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                </button>
+                <button class="trending-topic" data-trend="#DailyInspiration">
+                    <span class="trending-number">04</span>
+                    <span class="trending-info"><strong>#DailyInspiration</strong><span>946 posts</span></span>
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                </button>
+                <button class="trending-topic" data-trend="#DesignCommunity">
+                    <span class="trending-number">05</span>
+                    <span class="trending-info"><strong>#DesignCommunity</strong><span>832 posts</span></span>
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                </button>
+                <button class="text-button full-width-button" id="showMoreTrendsButton">Explore more trends <i class="fa-solid fa-arrow-right"></i></button>
+            </section>
+
+            <!-- UPCOMING EVENT -->
+            <section class="event-card content-card">
+                <div class="event-banner">
+                    <span class="event-label"><i class="fa-solid fa-calendar-check"></i> COMMUNITY EVENT</span>
+                    <span class="event-date"><strong>28</strong><small>OCT</small></span>
+                </div>
+                <div class="event-content">
+                    <span class="event-category">CREATIVITY & DESIGN</span>
+                    <h3>Creative Minds Meetup</h3>
+                    <p><i class="fa-regular fa-clock"></i> Wednesday, 6:00 PM</p>
+                    <p><i class="fa-solid fa-location-dot"></i> Online community event</p>
+                    <div class="event-attendees"><div class="attendee-avatars"><img src="https://i.pravatar.cc/30?img=25" alt=""><img src="https://i.pravatar.cc/30?img=47" alt=""><img src="https://i.pravatar.cc/30?img=32" alt=""></div><span>+124 people interested</span></div>
+                    <button class="primary-button event-join-button" id="joinEventButton">I'm interested <i class="fa-solid fa-arrow-right"></i></button>
+                </div>
+            </section>
+
+            <!-- ONLINE FRIENDS -->
+            <section class="online-friends-section content-card">
+                <div class="section-header"><div><h2>Friends online</h2><p><span class="online-indicator"></span> 6 friends active</p></div><button class="small-icon-button" id="onlineFriendsMenu" aria-label="Online friends options"><i class="fa-solid fa-ellipsis"></i></button></div>
+                <button class="online-friend" data-message-user="Sophia Chen"><span class="online-avatar"><img src="https://i.pravatar.cc/80?img=47" alt="Sophia Chen"><i></i></span><span class="online-friend-name">Sophia Chen</span><span class="online-friend-action"><i class="fa-regular fa-message"></i></span></button>
+                <button class="online-friend" data-message-user="Noah Williams"><span class="online-avatar"><img src="https://i.pravatar.cc/80?img=13" alt="Noah Williams"><i></i></span><span class="online-friend-name">Noah Williams</span><span class="online-friend-action"><i class="fa-regular fa-message"></i></span></button>
+                <button class="online-friend" data-message-user="Emma Wilson"><span class="online-avatar"><img src="https://i.pravatar.cc/80?img=44" alt="Emma Wilson"><i></i></span><span class="online-friend-name">Emma Wilson</span><span class="online-friend-action"><i class="fa-regular fa-message"></i></span></button>
+                <button class="online-friend" data-message-user="Liam Anderson"><span class="online-avatar"><img src="https://i.pravatar.cc/80?img=14" alt="Liam Anderson"><i></i></span><span class="online-friend-name">Liam Anderson</span><span class="online-friend-action"><i class="fa-regular fa-message"></i></span></button>
+            </section>
+
+        </aside>
+    </div>
+
+    <!-- ==================== MOBILE BOTTOM NAVIGATION ==================== -->
+    <nav class="mobile-bottom-nav" id="mobileBottomNav" aria-label="Mobile navigation">
+        <a href="#home" class="mobile-nav-item active" data-page="home"><i class="fa-solid fa-house"></i><span>Home</span></a>
+        <a href="#explore" class="mobile-nav-item" data-page="explore"><i class="fa-solid fa-compass"></i><span>Explore</span></a>
+        <button class="mobile-create-button" id="mobileCreateButton" aria-label="Create a post"><i class="fa-solid fa-plus"></i></button>
+        <a href="#messages" class="mobile-nav-item" data-page="messages"><i class="fa-regular fa-message"></i><span>Messages</span></a>
+        <a href="#profile" class="mobile-nav-item" data-page="profile"><i class="fa-regular fa-user"></i><span>Profile</span></a>
+    </nav>
+
+    <!-- ==================== CREATE POST MODAL ==================== -->
+    <div class="modal-backdrop hidden" id="createPostModal" role="dialog" aria-modal="true" aria-labelledby="createPostModalTitle">
+        <div class="modal modal-large">
+            <div class="modal-header">
+                <div><span class="modal-eyebrow">SHARE WITH YOUR COMMUNITY</span><h2 id="createPostModalTitle">Create a post</h2></div>
+                <button class="modal-close-button" data-close-modal="createPostModal" aria-label="Close dialog"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="createPostForm">
+                <div class="modal-user-info"><img src="https://i.pravatar.cc/100?img=12" alt="Alex Morgan" class="avatar avatar-medium"><div><strong>Alex Morgan</strong><span><i class="fa-solid fa-earth-americas"></i> Public</span></div></div>
+                <label class="visually-hidden" for="newPostText">What's on your mind?</label>
+                <textarea id="newPostText" name="postText" rows="5" maxlength="2000" placeholder="What's on your mind? Share something amazing..." required></textarea>
+                <div class="character-counter"><span id="postCharacterCount">0</span>/2000 characters</div>
+                <label class="form-label" for="newPostImage">Image URL <span>(optional)</span></label>
+                <input type="url" id="newPostImage" name="postImage" placeholder="https://example.com/your-image.jpg">
+                <div class="post-image-preview hidden" id="newPostImagePreview"><img src="" alt="Post preview"><button type="button" id="removePostImageButton" aria-label="Remove image"><i class="fa-solid fa-xmark"></i></button></div>
+                <div class="post-composer-tools"><span>Add to your post</span><button type="button" id="composerPhotoButton" title="Add image"><i class="fa-regular fa-image"></i></button><button type="button" id="composerFeelingButton" title="Add feeling"><i class="fa-regular fa-face-smile"></i></button><button type="button" id="composerLocationButton" title="Add location"><i class="fa-solid fa-location-dot"></i></button></div>
+                <button type="submit" class="primary-button modal-submit-button" id="publishPostButton">Publish post <i class="fa-solid fa-paper-plane"></i></button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==================== STORY VIEWER MODAL ==================== -->
+    <div class="modal-backdrop hidden story-modal-backdrop" id="storyViewerModal" role="dialog" aria-modal="true" aria-label="Story viewer">
+        <div class="story-viewer">
+            <div class="story-progress-track"><span id="storyProgressBar"></span></div>
+            <div class="story-viewer-header"><div class="story-viewer-user"><img id="storyViewerAvatar" src="" alt=""><div><strong id="storyViewerName">Story</strong><span id="storyViewerTime">Just now</span></div></div><button class="modal-close-button story-close-button" data-close-modal="storyViewerModal" aria-label="Close story"><i class="fa-solid fa-xmark"></i></button></div>
+            <img class="story-viewer-image" id="storyViewerImage" src="" alt="Story image">
+            <div class="story-viewer-controls"><button id="previousStoryButton" aria-label="Previous story"><i class="fa-solid fa-chevron-left"></i></button><button id="nextStoryButton" aria-label="Next story"><i class="fa-solid fa-chevron-right"></i></button></div>
+            <div class="story-reply-bar"><input id="storyReplyInput" type="text" placeholder="Reply to this story..."><button id="sendStoryReplyButton" aria-label="Send reply"><i class="fa-solid fa-paper-plane"></i></button><button id="storyLikeButton" aria-label="Like story"><i class="fa-regular fa-heart"></i></button></div>
+        </div>
+    </div>
+
+    <!-- ==================== NOTIFICATIONS POPOVER ==================== -->
+    <div class="popover-panel hidden" id="notificationPopover">
+        <div class="popover-header"><h3>Notifications</h3><button class="text-button" id="markAllReadButton">Mark all read</button></div>
+        <div class="notification-list" id="notificationList">
+            <button class="notification-item unread" data-notification-id="n1"><img src="https://i.pravatar.cc/60?img=47" alt="" class="avatar avatar-medium"><span class="notification-copy"><strong>Sophia Chen</strong> liked your photo.<small>5 minutes ago</small></span><span class="notification-unread-dot"></span></button>
+            <button class="notification-item unread" data-notification-id="n2"><img src="https://i.pravatar.cc/60?img=13" alt="" class="avatar avatar-medium"><span class="notification-copy"><strong>Noah Williams</strong> commented on your post.<small>18 minutes ago</small></span><span class="notification-unread-dot"></span></button>
+            <button class="notification-item unread" data-notification-id="n3"><img src="https://i.pravatar.cc/60?img=44" alt="" class="avatar avatar-medium"><span class="notification-copy"><strong>Emma Wilson</strong> started following you.<small>1 hour ago</small></span><span class="notification-unread-dot"></span></button>
+            <button class="notification-item" data-notification-id="n4"><img src="https://i.pravatar.cc/60?img=25" alt="" class="avatar avatar-medium"><span class="notification-copy"><strong>Sarah Parker</strong> sent you a friend request.<small>Yesterday</small></span></button>
+        </div>
+        <button class="text-button full-width-button" id="allNotificationsButton">See all notifications</button>
+    </div>
+
+    <!-- ==================== PROFILE MENU ==================== -->
+    <div class="profile-menu hidden" id="profileMenu">
+        <div class="profile-menu-header"><img src="https://i.pravatar.cc/80?img=12" alt="Alex Morgan" class="avatar avatar-medium"><div><strong>Alex Morgan</strong><span>@alexmorgan</span></div></div>
+        <div class="profile-menu-divider"></div>
+        <button data-profile-action="profile"><i class="fa-regular fa-user"></i> View profile</button>
+        <button data-profile-action="saved"><i class="fa-regular fa-bookmark"></i> Saved posts</button>
+        <button data-profile-action="settings"><i class="fa-solid fa-gear"></i> Account settings</button>
+        <div class="profile-menu-divider"></div>
+        <button data-profile-action="help"><i class="fa-regular fa-circle-question"></i> Help & support</button>
+        <button data-profile-action="logout" class="logout-button"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sign out</button>
+    </div>
+
+    <!-- ==================== POST OPTIONS MENU ==================== -->
+    <div class="post-options-menu hidden" id="postOptionsMenu">
+        <button data-post-action="save"><i class="fa-regular fa-bookmark"></i> Save post</button>
+        <button data-post-action="copy"><i class="fa-solid fa-link"></i> Copy post link</button>
+        <button data-post-action="hide"><i class="fa-regular fa-eye-slash"></i> Hide post</button>
+        <button data-post-action="report" class="report-action"><i class="fa-regular fa-flag"></i> Report post</button>
+    </div>
+
+    <!-- ==================== COMMENT MODAL ==================== -->
+    <div class="modal-backdrop hidden" id="commentsModal" role="dialog" aria-modal="true" aria-labelledby="commentsModalTitle">
+        <div class="modal comments-modal">
+            <div class="modal-header"><h2 id="commentsModalTitle">Comments</h2><button class="modal-close-button" data-close-modal="commentsModal" aria-label="Close comments"><i class="fa-solid fa-xmark"></i></button></div>
+            <div class="comments-modal-body" id="commentsModalBody"></div>
+            <form class="comment-form modal-comment-form" id="modalCommentForm"><img src="https://i.pravatar.cc/60?img=12" alt="Your avatar" class="avatar avatar-small"><label class="comment-input-wrapper"><input type="text" id="modalCommentInput" placeholder="Write a comment..." required><button type="submit" aria-label="Send comment"><i class="fa-solid fa-paper-plane"></i></button></label></form>
+        </div>
+    </div>
+
+    <!-- ==================== MESSAGE PANEL ==================== -->
+    <div class="message-panel hidden" id="messagePanel">
+        <div class="message-panel-header"><div><i class="fa-regular fa-message"></i><h3>Messages</h3><span class="online-indicator"></span></div><div><button class="small-icon-button" id="newMessageButton" aria-label="New message"><i class="fa-solid fa-pen-to-square"></i></button><button class="small-icon-button" id="closeMessagePanelButton" aria-label="Close messages"><i class="fa-solid fa-xmark"></i></button></div></div>
+        <label class="message-search"><i class="fa-solid fa-magnifying-glass"></i><input type="search" id="messageSearchInput" placeholder="Search conversations..."></label>
+        <div class="conversation-list" id="conversationList">
+            <button class="conversation-item active" data-conversation="Sophia Chen"><span class="online-avatar"><img src="https://i.pravatar.cc/80?img=47" alt=""><i></i></span><span class="conversation-info"><strong>Sophia Chen</strong><span>That sounds amazing! ✨</span></span><time>2m</time></button>
+            <button class="conversation-item" data-conversation="Noah Williams"><span class="online-avatar"><img src="https://i.pravatar.cc/80?img=13" alt=""><i></i></span><span class="conversation-info"><strong>Noah Williams</strong><span>Thanks for the feedback!</span></span><time>18m</time></button>
+            <button class="conversation-item" data-conversation="Emma Wilson"><span class="online-avatar"><img src="https://i.pravatar.cc/80?img=44" alt=""><i></i></span><span class="conversation-info"><strong>Emma Wilson</strong><span>See you there!</span></span><time>1h</time></button>
+            <button class="conversation-item" data-conversation="Liam Anderson"><span class="online-avatar"><img src="https://i.pravatar.cc/80?img=14" alt=""><i></i></span><span class="conversation-info"><strong>Liam Anderson</strong><span>Great work today 💪</span></span><time>3h</time></button>
+        </div>
+        <div class="message-chat hidden" id="messageChat">
+            <div class="message-chat-header"><button id="backToConversationsButton" aria-label="Back to conversations"><i class="fa-solid fa-arrow-left"></i></button><img id="chatAvatar" src="" alt=""><div><strong id="chatContactName">Contact</strong><span><i class="online-indicator"></i> Active now</span></div></div>
+            <div class="chat-messages" id="chatMessages"></div>
+            <form class="chat-compose" id="chatComposeForm"><input type="text" id="chatMessageInput" placeholder="Write a message..." required><button type="submit" aria-label="Send message"><i class="fa-solid fa-paper-plane"></i></button></form>
+        </div>
+    </div>
+
+    <!-- ==================== SETTINGS MODAL ==================== -->
+    <div class="modal-backdrop hidden" id="settingsModal" role="dialog" aria-modal="true" aria-labelledby="settingsModalTitle">
+        <div class="modal">
+            <div class="modal-header"><div><span class="modal-eyebrow">MAKE IT YOURS</span><h2 id="settingsModalTitle">Settings</h2></div><button class="modal-close-button" data-close-modal="settingsModal" aria-label="Close settings"><i class="fa-solid fa-xmark"></i></button></div>
+            <div class="settings-list">
+                <div class="settings-item"><div><strong>Dark mode</strong><p>Change the appearance of ConnectHub.</p></div><button class="switch-button" id="settingsThemeSwitch" role="switch" aria-checked="false" aria-label="Dark mode"><span></span></button></div>
+                <div class="settings-item"><div><strong>Compact feed</strong><p>Use a denser layout for posts.</p></div><button class="switch-button" id="compactFeedSwitch" role="switch" aria-checked="false" aria-label="Compact feed"><span></span></button></div>
+                <div class="settings-item"><div><strong>Show notifications</strong><p>Show the notification badge.</p></div><button class="switch-button active" id="notificationSwitch" role="switch" aria-checked="true" aria-label="Show notifications"><span></span></button></div>
+                <div class="settings-item"><div><strong>Autoplay stories</strong><p>Automatically move through stories.</p></div><button class="switch-button" id="autoplayStoriesSwitch" role="switch" aria-checked="false" aria-label="Autoplay stories"><span></span></button></div>
+            </div>
+            <button class="primary-button modal-submit-button" id="saveSettingsButton">Save settings <i class="fa-solid fa-check"></i></button>
+        </div>
+    </div>
+
+    <!-- ==================== COMMUNITY MODAL ==================== -->
+    <div class="modal-backdrop hidden" id="communityModal" role="dialog" aria-modal="true" aria-labelledby="communityModalTitle">
+        <div class="modal">
+            <div class="modal-header"><div><span class="modal-eyebrow">FIND YOUR PEOPLE</span><h2 id="communityModalTitle">Create a community</h2></div><button class="modal-close-button" data-close-modal="communityModal" aria-label="Close"><i class="fa-solid fa-xmark"></i></button></div>
+            <form id="communityForm">
+                <label class="form-label" for="communityName">Community name</label>
+                <input type="text" id="communityName" placeholder="e.g. Frontend Developers" maxlength="50" required>
+                <label class="form-label" for="communityDescription">Description</label>
+                <textarea id="communityDescription" rows="3" maxlength="250" placeholder="What is this community about?"></textarea>
+                <label class="form-label" for="communityCategory">Category</label>
+                <select id="communityCategory"><option>Technology</option><option>Design</option><option>Travel</option><option>Photography</option><option>Fitness</option><option>Education</option><option>Other</option></select>
+                <button type="submit" class="primary-button modal-submit-button">Create community <i class="fa-solid fa-plus"></i></button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==================== PROFILE EDIT MODAL ==================== -->
+    <div class="modal-backdrop hidden" id="editProfileModal" role="dialog" aria-modal="true" aria-labelledby="editProfileModalTitle">
+        <div class="modal">
+            <div class="modal-header"><div><span class="modal-eyebrow">YOUR DIGITAL IDENTITY</span><h2 id="editProfileModalTitle">Edit profile</h2></div><button class="modal-close-button" data-close-modal="editProfileModal" aria-label="Close"><i class="fa-solid fa-xmark"></i></button></div>
+            <form id="editProfileForm">
+                <label class="form-label" for="profileDisplayName">Display name</label>
+                <input type="text" id="profileDisplayName" value="Alex Morgan" maxlength="60" required>
+                <label class="form-label" for="profileUsername">Username</label>
+                <input type="text" id="profileUsername" value="alexmorgan" maxlength="30" required>
+                <label class="form-label" for="profileBio">About you</label>
+                <textarea id="profileBio" rows="4" maxlength="250">Designer, creator, and curious mind. Making things that matter. ✨</textarea>
+                <label class="form-label" for="profileAvatarUrl">Avatar image URL</label>
+                <input type="url" id="profileAvatarUrl" placeholder="https://example.com/avatar.jpg">
+                <button type="submit" class="primary-button modal-submit-button">Save profile <i class="fa-solid fa-check"></i></button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==================== CONFIRMATION MODAL ==================== -->
+    <div class="modal-backdrop hidden" id="confirmModal" role="dialog" aria-modal="true" aria-labelledby="confirmModalTitle">
+        <div class="modal confirm-modal">
+            <div class="confirm-icon"><i class="fa-regular fa-circle-question"></i></div>
+            <h2 id="confirmModalTitle">Are you sure?</h2>
+            <p id="confirmModalMessage">Please confirm this action.</p>
+            <div class="confirm-actions"><button class="secondary-button" id="cancelConfirmButton">Cancel</button><button class="primary-button" id="acceptConfirmButton">Confirm</button></div>
+        </div>
+    </div>
+
+    <!-- ==================== IMAGE VIEWER ==================== -->
+    <div class="image-lightbox hidden" id="imageLightbox" role="dialog" aria-modal="true" aria-label="Image viewer">
+        <button class="lightbox-close" id="closeLightboxButton" aria-label="Close image"><i class="fa-solid fa-xmark"></i></button>
+        <button class="lightbox-download" id="downloadImageButton" aria-label="Open image in a new tab"><i class="fa-solid fa-arrow-up-right-from-square"></i></button>
+        <img id="lightboxImage" src="" alt="Expanded post image">
+        <p id="lightboxCaption"></p>
+    </div>
+
+    <!-- ==================== SCROLL TO TOP ==================== -->
+    <button class="scroll-top-button hidden" id="scrollTopButton" aria-label="Scroll to top"><i class="fa-solid fa-arrow-up"></i></button>
+
+    <!-- ==================== APPLICATION FOOTER ==================== -->
+    <footer class="main-footer">
+        <div class="footer-brand"><span class="brand-icon"><i class="fa-solid fa-link"></i></span><strong>ConnectHub</strong></div>
+        <p>Bringing people together, one connection at a time.</p>
+        <div class="footer-links"><a href="#about">About</a><a href="#privacy">Privacy</a><a href="#terms">Terms</a><a href="#help">Help Center</a></div>
+        <p class="footer-copyright">© 2026 ConnectHub. Built for learning and connection.</p>
+    </footer>
+
+    <!-- JavaScript application -->
+    <script src="script.js"></script>
+</body>
+</html>
